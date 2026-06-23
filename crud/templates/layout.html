@@ -3,25 +3,52 @@
   <head>
     <meta charset="UTF-8" />
     <title>FLASK CRUD 1.5</title>
-    <!-- CSS de Bootswatch (Tema Cosmo) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/cosmo/bootstrap.min.css">
+    
+    <link id="theme-link" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/cosmo/bootstrap.min.css">
+    
+    <script>
+      (function() {
+        const savedTheme = localStorage.getItem('theme');
+        const usuarioLogueado = {{ 'true' if g.usuario else 'false' }};
+        
+        // Solo aplica el tema oscuro si el usuario está logueado y lo eligió previamente
+        if (usuarioLogueado && savedTheme === 'dark') {
+          document.getElementById('theme-link').setAttribute('href', 'https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/darkly/bootstrap.min.css');
+        }
+      })();
+    </script>
   </head>
   <body>
-    <!-- Barra de Navegación -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
       <div class="container">
         <a class="navbar-brand" href="/">FLASK CRUD</a>
-        <div class="d-flex">
+        <div class="d-flex align-items-center">
+          
           {% if g.usuario %}
             <span class="navbar-text me-3 text-white">Hola, {{ g.usuario }}</span>
-            <a class="btn btn-secondary btn-sm" href="{{url_for('logout')}}">Salir</a>
+            
+            <div class="dropdown me-3">
+              <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="themeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                🎨 Tema
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="themeDropdown">
+                <li>
+                  <button class="dropdown-item" onclick="cambiarTema('light')">☀️ Claro (Cosmo)</button>
+                </li>
+                <li>
+                  <button class="dropdown-item" onclick="cambiarTema('dark')">🌙 Oscuro (Darkly)</button>
+                </li>
+              </ul>
+            </div>
+
+            <a class="btn btn-danger btn-sm" href="{{url_for('logout')}}">Salir</a>
           {% endif %}
+          
         </div>
       </div>
     </nav>
 
     <div class="container">
-      <!-- Mensajes Flash adaptados a Bootstrap -->
       {% with messages = get_flashed_messages() %} 
         {% if messages %}
           {% for message in messages %}
@@ -32,8 +59,23 @@
         {% endif %} 
       {% endwith %}
 
-      <!-- Contenido de las otras vistas -->
       {% block body %} {% endblock %}
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+      function cambiarTema(tema) {
+        const linkElement = document.getElementById('theme-link');
+        
+        if (tema === 'dark') {
+          linkElement.setAttribute('href', 'https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/darkly/bootstrap.min.css');
+          localStorage.setItem('theme', 'dark');
+        } else {
+          linkElement.setAttribute('href', 'https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/cosmo/bootstrap.min.css');
+          localStorage.setItem('theme', 'light');
+        }
+      }
+    </script>
   </body>
 </html>
