@@ -3,19 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <title>FLASK CRUD 1.5</title>
-    {% with messages = get_flashed_messages() %} {% if messages %}
-    <ul>
-      {% for message in messages %}
-      <li>{{ message }}</li>
-      {% endfor %}
-    </ul>
-    {% endif %} {% endwith %}
-    {% if g.usuario %}
-      <div style="float: right;">{{ g.usuario }} <a href="{{url_for('logout')}}">Salir</a> </div>
-    {% endif %}
-
+    <!-- CSS de Bootswatch (Tema Cosmo) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/cosmo/bootstrap.min.css">
   </head>
   <body>
-    {% block body %} {% endblock %}
+    <!-- Barra de Navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+      <div class="container">
+        <a class="navbar-brand" href="/">FLASK CRUD</a>
+        <div class="d-flex">
+          {% if g.usuario %}
+            <span class="navbar-text me-3 text-white">Hola, {{ g.usuario }}</span>
+            <a class="btn btn-secondary btn-sm" href="{{url_for('logout')}}">Salir</a>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <!-- Mensajes Flash adaptados a Bootstrap -->
+      {% with messages = get_flashed_messages() %} 
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-info" role="alert">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %} 
+      {% endwith %}
+
+      <!-- Contenido de las otras vistas -->
+      {% block body %} {% endblock %}
+    </div>
   </body>
 </html>
